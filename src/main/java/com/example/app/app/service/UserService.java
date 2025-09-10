@@ -5,4 +5,5 @@ import com.example.app.app.dto.UserResponseDTO;
 
 public interface UserService {
 UserResponseDTO createUser(UserRequestDTO userRequestDTO);
+void deleteUser(Long id);
 }

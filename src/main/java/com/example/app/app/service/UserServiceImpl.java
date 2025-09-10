@@ -2,6 +2,7 @@ package com.example.app.app.service;
 
 import com.example.app.app.dto.UserRequestDTO;
 import com.example.app.app.dto.UserResponseDTO;
+import com.example.app.app.exception.UserNotFoundException;
 import com.example.app.app.model.User;
 import com.example.app.app.repository.UserRepository;
 import com.example.app.app.utils.BeanMapperUtils;
@@ -28,5 +29,11 @@ public class UserServiceImpl implements UserService{
 
 
 
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+userRepository.findById(id).orElseThrow(()->new UserNotFoundException("No User with Given id"));
+userRepository.deleteById(id);
     }
 }
