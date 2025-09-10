@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class UserController {
     @Autowired
@@ -27,6 +29,20 @@ public class UserController {
     public ResponseEntity<MessageDTO> deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
        return ResponseEntity.status(HttpStatus.OK).body(new MessageDTO("User Deleted"));
+    }
+    @PutMapping("/updateUser/{id}")
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO){
+        UserResponseDTO fetchedUser = userService.updateUser(id, userRequestDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(fetchedUser);
+
+
+    }
+    @GetMapping("/getAllUsers")
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers(){
+        List<UserResponseDTO> fetchedUsers = userService.getUsers();
+        return ResponseEntity.status(HttpStatus.OK).body(fetchedUsers);
+
+
     }
 
 }

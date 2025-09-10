@@ -6,9 +6,13 @@ import com.example.app.app.exception.UserNotFoundException;
 import com.example.app.app.model.User;
 import com.example.app.app.repository.UserRepository;
 import com.example.app.app.utils.BeanMapperUtils;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -32,8 +36,27 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long id) {
 userRepository.findById(id).orElseThrow(()->new UserNotFoundException("No User with Given id"));
 userRepository.deleteById(id);
+    }
+
+    @Override
+    public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO) {
+        User fetchedUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("No User with Given id"));
+        beanMapperUtils.copyNonNullProperties(userRequestDTO,fetchedUser);
+        userRepository.save(fetchedUser);
+        return mapper.map(fetchedUser,UserResponseDTO.class);
+
+
+
+    }
+
+    @Override
+    public List<UserResponseDTO> getUsers() {
+        List<User> allUsers = userRepository.findAll();
+        return  allUsers.stream().map(user->mapper.map(user,UserResponseDTO.class))
+                .collect(Collectors.toList());
     }
 }
