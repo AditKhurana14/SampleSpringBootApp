@@ -9,6 +9,7 @@ import com.example.app.app.utils.BeanMapperUtils;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,10 +24,14 @@ public class UserServiceImpl implements UserService{
     private ModelMapper mapper;
     @Autowired
     private BeanMapperUtils beanMapperUtils;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @Override
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
         User user = mapper.map(userRequestDTO, User.class);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUserEntity = userRepository.save(user);
 
         return mapper.map(savedUserEntity,UserResponseDTO.class);
